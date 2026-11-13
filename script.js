@@ -182,11 +182,20 @@
       $('[data-inflatable]', card).setAttribute('aria-pressed', String(active));
     });
     if (scroll) {
+      setBookingOpen(true);
       $('#booking').scrollIntoView({ behavior: 'smooth', block: 'center' });
       showToast(`${inflatables[id]} selected — now choose your date`);
     }
   }
   $$('#attractionGrid [data-inflatable]').forEach(button => button.addEventListener('click', () => selectInflatable(button.dataset.inflatable)));
+  // On phones the calendar collapses into a drop-down so the balloons can play around the closed card.
+  const bookingPanel = $('#booking'), bookingDropdown = $('#bookingDropdown');
+  function setBookingOpen(open) {
+    bookingPanel.classList.toggle('is-open', open);
+    bookingDropdown.setAttribute('aria-expanded', String(open));
+  }
+  bookingDropdown.addEventListener('click', () => setBookingOpen(!bookingPanel.classList.contains('is-open')));
+  $$('a[href="#booking"]').forEach(link => link.addEventListener('click', () => setBookingOpen(true)));
   ui.bookingAction.addEventListener('click', () => {
     if (!selectedDate) {
       showToast('Please select an available date on the calendar.');

@@ -12,8 +12,11 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
+  <script src="assets/vendor/three.min.js" defer></script>
+  <script src="balloons.js" defer></script>
 </head>
 <body>
+  <canvas class="balloon-field" id="balloonScene" aria-hidden="true" hidden></canvas>
   <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
@@ -54,11 +57,13 @@
           <h1 id="heroTitle">Play Well.<br/><span>Bounce Big.</span></h1>
           <p class="hero-intro">Premium inflatable castles, slides &amp; adventure courses for unforgettable celebrations.</p>
           <a href="#inflatables" class="button button-primary hero-cta">Explore Inflatables <svg><use href="#i-arrow"/></svg></a>
+          <p class="balloon-hint" aria-hidden="true"><span>✦</span> Move or swipe to play</p>
         </div>
 
         <div class="booking-panel" id="booking" aria-label="Booking calendar — demonstration">
           <div class="booking-head"><div class="booking-icon"><svg><use href="#i-calendar"/></svg></div><div><p class="eyebrow booking-mini">LET'S MAKE IT A PLAY DAY</p><h2>Book your inflatable</h2><p class="booking-subtitle">Choose a date to preview availability.</p></div></div>
-          <div class="booking-body">
+          <button type="button" class="booking-dropdown" id="bookingDropdown" aria-expanded="false" aria-controls="bookingDetails">Select a date <svg aria-hidden="true"><use href="#i-chevron"/></svg></button>
+          <div class="booking-body" id="bookingDetails">
             <div class="calendar-area">
               <div class="calendar-card">
                 <div class="calendar-nav"><button type="button" class="month-arrow prev" id="prevMonth" aria-label="Previous month"><svg><use href="#i-chevron"/></svg></button><h3 id="monthLabel" aria-live="polite">October 2026</h3><button type="button" class="month-arrow" id="nextMonth" aria-label="Next month"><svg><use href="#i-chevron"/></svg></button></div>
@@ -111,6 +116,11 @@
     <section class="story-section" id="about"><div class="container story-inner"><div class="story-art"><div class="story-bubble bubble-one"></div><div class="story-bubble bubble-two"></div><div class="story-doodle">PLAY<br/>WELL.</div></div><div class="story-copy"><p class="eyebrow">THERE'S MORE TO THE FUN</p><h2>More than play.<br/><span>More smiles, every day.</span></h2><p>Pinkies brings people together through playful experiences, colour, movement and memorable celebrations.</p><a href="#booking" class="button button-primary">Plan your play day <svg><use href="#i-arrow"/></svg></a></div></div></section>
   </main>
   <footer class="site-footer"><div class="container footer-inner"><div class="footer-brand"><img src="assets/pinkies-logo.png" alt="PINKIES" width="170" height="32"/><span>PLAY WELL</span><p>FAMILY WELLNESS THROUGH THE JOY OF PLAY.</p></div><div class="footer-links"><div><h3>Explore</h3><a href="#inflatables">Inflatables</a><a href="#booking">Book a date</a><a href="#tshirts">T-Shirts</a></div><div><h3>Pinkies</h3><a href="#about">Our story</a><a href="#top">Back to top</a></div></div><div class="footer-note">A little play goes a long way. <span>♡</span></div></div><div class="container footer-bottom"><span>© <span id="copyrightYear">2026</span> Pinkies Play Well.</span><span>Website concept preview</span></div></footer>
+
+  <button class="balloon-toggle" id="balloonToggle" type="button" aria-label="Pause balloon animation" title="Pause balloon animation" hidden>
+    <svg class="balloon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>
+    <svg class="balloon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>
+  </button>
 
   <div class="overlay" id="overlay" hidden></div>
   <aside class="cart-drawer drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden="true"><div class="drawer-header"><h2>Your bag <span id="drawerCount">(0)</span></h2><button type="button" class="icon-button" data-close aria-label="Close bag"><svg><use href="#i-close"/></svg></button></div><div class="drawer-content" id="cartItems"><div class="empty-bag"><svg><use href="#i-bag"/></svg><p>Your bag is empty.</p><a href="#tshirts" class="button button-primary" data-close>Shop T-Shirts</a></div></div><div class="drawer-bottom"><div class="subtotal-line"><span>Subtotal</span><strong id="subtotal">£0.00</strong></div><p>This prototype has no connected checkout or payment processing.</p><button type="button" class="button button-primary button-wide" id="exportCart">Copy bag summary <svg><use href="#i-arrow"/></svg></button></div></aside>

@@ -12,7 +12,8 @@ A responsive HTML/CSS/JavaScript prototype based on the supplied Pinkies concept
 - `index.html` — accessible semantic markup
 - `style.css` — responsive styling and frosted-glass booking calendar
 - `script.js` — interactive calendar, product filters, favourites, enquiry preview and shopping bag
-- `assets/` — optimised local Pinkies imagery
+- `balloons.js` — interactive 3D balloon animation
+- `assets/` — optimised local Pinkies imagery and a local copy of Three.js 0.160.0 (`assets/vendor/three.LICENSE.txt`)
 
 ## What works in this design prototype
 
@@ -22,6 +23,7 @@ A responsive HTML/CSS/JavaScript prototype based on the supplied Pinkies concept
 - Enquiry copied locally to clipboard; **no submission is performed**
 - Filter adults / kids T-shirts, select size/quantity, add/remove items from a shopping bag and copy the bag summary
 - Mobile menu, local page search and favourites
+- Pink, white and blue balloons gather in a band across the free space while scrolling, flow around page content and swirl around the pointer or a touch as if it were a big invisible balloon. In the "More than play" section a big pink and a blue balloon settle behind the "PLAY WELL." lettering. Use the bottom-right control to pause or resume them. The animation is disabled when reduced motion is requested or WebGL is unavailable.
 
 ## Before a commercial launch
 
