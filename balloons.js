@@ -18,7 +18,7 @@
   var OBSTACLE_SELECTOR = [
     '.announce', '.site-header', '.booking-panel',
     '.attraction-card', '.benefits-strip', '.section-heading', '.tees-section h2',
-    '.attractions-section h2', '.shop-filter', '.product-card',
+    '.attractions-section h2', '.filter-btn', '.product-card',
     '.story-copy h2', '.story-copy p', '.story-copy .button',
     '.footer-brand', '.footer-links h3', '.footer-links a', '.footer-note', '.footer-bottom span',
     '.balloon-toggle'
@@ -71,7 +71,7 @@
   function easeOutCubic(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
 
   function ballCount() {
-    return window.innerWidth < 768 ? 60 : 84;
+    return window.innerWidth < 768 ? 50 : 70;
   }
 
   function pickFamily() {
@@ -176,7 +176,7 @@
       var el = document.querySelector(a.selector);
       if (!el) return;
       var fr = a.freeRadius * SIZE_BOOST * (window.innerWidth < 768 ? 0.5 : 1);
-      var ab = { id: n + ai, r: fr, freeR: fr, mass: fr * fr * fr, scale: fr, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, group: null, index: 0, anchorEl: el, anchored: false, ax: 0, ay: 0 };
+      var ab = { id: n + ai, r: fr, freeR: fr, mass: fr * fr * fr, scale: fr, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, group: null, index: 0, anchorEl: el, anchorDepth: ai * 0.9, anchored: false, ax: 0, ay: 0 };
       buckets['anchor' + ai] = { color: a.color, glass: false, list: [ab] };
       balls.push(ab);
     });
@@ -370,7 +370,7 @@
     });
     next.forEach(function (p) { p.cap = (p.r - p.l) * (p.bottom - p.top) / px * 0.55; });
     function projR(b) { return b.scale * CAM_Z / (CAM_Z - b.z); }
-    function fits(b, p) { return 2 * projR(b) <= Math.min((p.bottom - p.top) / px * 1.2, p.r - p.l); }
+    function fits(b, p) { return 2 * projR(b) <= Math.min((p.bottom - p.top) / px * 0.9, p.r - p.l); }
     var limit = Math.floor(balls.length * 0.45), used = 0;
     // Balloons already in a pocket stay with it while it's still on screen, so nothing reshuffles mid-scroll.
     balls.forEach(function (b) {
@@ -492,7 +492,8 @@
         // Springs to its spot behind the doodle, at the front of the band.
         b.vx += (b.ax - b.x) * 0.012;
         b.vy += (b.ay - b.y) * 0.012;
-        b.vz += (Z_BOUND - b.z) * 0.02;
+        // The blue one sits a little deeper, so the pair reads as one balloon tucked behind the other.
+        b.vz += (Z_BOUND - b.anchorDepth - b.z) * 0.02;
       } else {
         // Gentle horizontal / firm vertical pull keeps the balloons packed in a band across the free area.
         b.vx += (center.x - b.x) * k * 0.45;
@@ -549,7 +550,8 @@
           var overlap = (minD - d) * 0.28;
           // Anchored balloons are immovable: the rest of the cluster flows around them.
           var ip = p.anchored ? 0 : 1 / p.mass, iq = q.anchored ? 0 : 1 / q.mass;
-          if (ip + iq === 0) continue;
+          // Two anchored balloons still bump each other so they touch instead of merging.
+          if (ip + iq === 0) { ip = 1; iq = 1; }
           var pr = ip / (ip + iq), qr = iq / (ip + iq);
           p.x -= nx * overlap * pr; p.y -= ny * overlap * pr; p.z -= nz * overlap * pr;
           q.x += nx * overlap * qr; q.y += ny * overlap * qr; q.z += nz * overlap * qr;
@@ -563,7 +565,8 @@
       }
       for (var o = 0; o < balls.length; o++) {
         var ball = balls[o];
-        resolveObstacles(ball, 0.6);
+        // Anchored balloons glide straight to their spot behind the doodle; text must never trap them elsewhere.
+        if (!ball.anchored) resolveObstacles(ball, 0.6);
         if (mouseCore > 0.01) {
           // The cursor is a solid balloon of infinite mass: overlap is resolved softly and only the
           // velocity heading into it is cancelled, so balloons slide around it instead of bouncing off.
